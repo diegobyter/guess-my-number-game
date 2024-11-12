@@ -19,6 +19,7 @@ main,
 footer {
     padding: 1rem 2rem;
     display: flex;
+    gap: 1rem;
 }
 
 header {
@@ -33,16 +34,31 @@ button {
     font-size: 1.3rem;
     color: rgb(51, 1, 187);
     border: none;
-    margin: auto 0 auto 0;
     cursor: pointer;
+    margin: 0 auto auto;
+}
+
+select {
+    padding: 10px 5px;
+    background-color: transparent;
+    color: white;
+    border: 3px solid white;
+    outline: none;
+}
+
+option {
+    padding: 1px 16px;
+    background-color: #591BC5;
+    color: white;
 }
 
 input {
     background-color: transparent;
     padding: 7px;
-    margin-right: .5rem;
     border: 3px solid white;
+    margin: 0 auto 0;
     border-radius: 0px;
+    text-align: center;
     font-size: 1.3rem;
     color: #fff;
     outline: none;
@@ -58,7 +74,9 @@ main {
 
 #secret-number {
     margin: 1rem;
-    padding: 2rem 2.5rem;
+    padding: 1rem 0;
+    width: 120px;
+    text-align: center;
     background-color: white;
     font-size: 2rem;
     color: rgb(51, 1, 187);
@@ -79,13 +97,12 @@ main {
 }
 
 #message {
-    margin: 2rem auto;
+    margin: 0 auto 0;
 }
 
 footer {
     flex-direction: column;
-    text-align: center;
-    justify-content: center;
+    height: 35vh;
 }
 
 .bg-gradient {

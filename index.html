@@ -10,7 +10,12 @@
 
 <body>
     <header>
-        <button id="play-again-btn">Play Again!</button>
+        <div>
+            <select name="cars" id="language">
+                <option value="volvo">🇺🇸 English</option>
+                <option value="saab">🇧🇷 Português</option>
+            </select>
+        </div>
         <div>
             <p>🏆 Highscore: <span id="highscore">0</span></p>
             <p>🔔 Score: <span id="current-score">20</span></p>
@@ -22,10 +27,8 @@
     </main>
     <footer>
         <p class="blink" id="message">&lt;Input a number between 1 and 20&gt;</p>
-        <div>
-            <input id="user-input" type="number" name="" min="1" max="20" step="1">
-            <button id="check-btn">Check!</button>
-        </div>
+        <input id="user-input" type="number" name="" min="1" max="20" step="1">
+        <button id="submit-btn">Submit</button>
     </footer>
     <script src="./js/script.js"></script>
 </body>

@@ -1,14 +1,13 @@
 "use strict";
 
-const $submitBtn = document.getElementById('check-btn');
-const $restartBtn = document.getElementById('play-again-btn');
+const $submitBtn = document.getElementById('submit-btn');
 const $guess = document.getElementById('user-input');
 
-const MIN_SCORE = 1;
+const MIN_SCORE = 10;
 const MAX_SCORE = 100;
 const MIN_GUESS = 1;
 const MAX_GUESS = 20;
-const PENALTY = 10;
+const PENALTY = 20;
 
 const gameState = {
     secretNumber: null,
@@ -43,13 +42,20 @@ function updateGameUI() {
     if (gameState.playerWin) {
         $h1.textContent = "You got it right!"
         $background.className = 'victory';
-    }
-    else if (gameState.gameIsOver) {
+        $guess.style.display = "none";
+        $submitBtn.textContent = "Play Again"
+
+    } else if (gameState.gameIsOver) {
         $background.className = 'gameover';
         $h1.textContent = "Game Over!";
+        $guess.style.display = "none";
+        $submitBtn.textContent = "Play Again"
+
     } else {
         $background.className = 'bg-gradient';
         $h1.textContent = "Guess My Number!";
+        $guess.style.display = "initial";
+        $submitBtn.textContent = "Check"
     }
 
     $secretNumber.textContent = gameState.playerWin ? gameState.secretNumber : "?";
@@ -104,7 +110,7 @@ function handleGameOver() {
 
 function handleWrongGuess(guess) {
     gameState.score -= PENALTY;
-    if (gameState.score === MIN_SCORE - PENALTY) {
+    if (gameState.score < MIN_SCORE) {
         handleGameOver();
     } else {
         const GUESS_TOO_HIGH = guess > gameState.secretNumber;
@@ -113,6 +119,10 @@ function handleWrongGuess(guess) {
 }
 
 function playGame() {
+    if (gameState.playerWin || gameState.gameIsOver) {
+        resetGame();
+        return;
+    }
     const GUESS = Number($guess.value);
     if (!$guess.value) {
         setWarning("Fill the input bellow with your guest first!");
@@ -130,5 +140,4 @@ function playGame() {
 }
 
 $submitBtn.addEventListener('click', playGame);
-$restartBtn.addEventListener('click', resetGame);
 resetGame();
