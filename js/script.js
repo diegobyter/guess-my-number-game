@@ -1,37 +1,22 @@
+import { MIN_GUESS, MAX_GUESS, MIN_SCORE, MAX_SCORE, PENALTY, updateHighscore, initializeGameState } from "./gameState.js";
+import { getGameState, decreaseScore } from "./gameState.js";
+
 "use strict";
 
 const $submitBtn = document.getElementById('submit-btn');
 const $guess = document.getElementById('user-input');
 
-const MIN_SCORE = 10;
-const MAX_SCORE = 100;
-const MIN_GUESS = 1;
-const MAX_GUESS = 20;
-const PENALTY = 20;
-
-const gameState = {
-    secretNumber: null,
-    score: 0,
-    highscore: 0,
-    message: null,
-    playerWin: false,
-    displayWarning: false,
-    gameIsOver: false,
-    resetGame: false
-}
-
 function resetGame() {
-    gameState.secretNumber = generateSecretNumber();
-    gameState.score = MAX_SCORE;
-    gameState.message = `<Input a number between ${MIN_GUESS} and ${MAX_GUESS}>`;
-    gameState.playerWin = false;
-    gameState.gameIsOver = false;
-    gameState.resetGame = true;
+    initializeGameState();
+    const state = getGameState();
+    state.message = `<Input a number between ${MIN_GUESS} and ${MAX_GUESS}>`;
     $guess.value = '';
     updateGameUI();
 }
 
 function updateGameUI() {
+    const state = getGameState();
+
     const $highscore = document.getElementById('highscore');
     const $score = document.getElementById('current-score');
     const $secretNumber = document.getElementById('secret-number');
@@ -39,13 +24,13 @@ function updateGameUI() {
     const $background = document.body;
     const $h1 = document.querySelector('h1');
 
-    if (gameState.playerWin) {
+    if (state.playerWin) {
         $h1.textContent = "You got it right!"
         $background.className = 'victory';
         $guess.style.display = "none";
         $submitBtn.textContent = "Play Again"
 
-    } else if (gameState.gameIsOver) {
+    } else if (state.gameIsOver) {
         $background.className = 'gameover';
         $h1.textContent = "Game Over!";
         $guess.style.display = "none";
@@ -58,12 +43,12 @@ function updateGameUI() {
         $submitBtn.textContent = "Check"
     }
 
-    $secretNumber.textContent = gameState.playerWin ? gameState.secretNumber : "?";
-    $highscore.textContent = gameState.highscore;
-    $score.textContent = gameState.score;
-    $message.textContent = gameState.message;
+    $secretNumber.textContent = state.playerWin ? state.secretNumber : "?";
+    $highscore.textContent = state.highscore;
+    $score.textContent = state.score;
+    $message.textContent = state.message;
 
-    if (gameState.displayWarning) {
+    if (state.displayWarning) {
         $guess.classList.add('shake');
         $submitBtn.classList.add('shake');
         $guess.setAttribute('disabled', true);
@@ -71,7 +56,7 @@ function updateGameUI() {
         $message.style.color = "orange";
 
         setTimeout(() => {
-            gameState.displayWarning = false;
+            state.displayWarning = false;
             $guess.classList.remove('shake');
             $submitBtn.classList.remove('shake');
             $guess.removeAttribute('disabled');
@@ -86,40 +71,44 @@ function generateSecretNumber() {
 }
 
 function setWarning(message) {
-    gameState.message = message;
-    gameState.displayWarning = true;
+    const state = getGameState();
+    state.message = message;
+    state.displayWarning = true;
 }
 function isCorrectGuess(guess) {
-    return guess === gameState.secretNumber;
+    const state = getGameState();
+    return guess === state.secretNumber;
 }
 function isValidGuess(guess) {
     return guess >= MIN_GUESS && guess <= MAX_GUESS;
 }
 function handleWin() {
-    gameState.playerWin = true;
-    gameState.message = "🚩 Congratulations! You won the game.";
-    if (gameState.score > gameState.highscore) {
-        gameState.highscore = gameState.score;
-    }
+    const state = getGameState();
+    state.playerWin = true;
+    state.message = "🚩 Congratulations! You won the game.";
+    updateHighscore();
 }
 
 function handleGameOver() {
-    gameState.gameIsOver = true;
-    gameState.message = "😥 What a shame! You lost.";
+    const state = getGameState();
+    state.gameIsOver = true;
+    state.message = "😥 What a shame! You lost.";
 }
 
 function handleWrongGuess(guess) {
-    gameState.score -= PENALTY;
-    if (gameState.score < MIN_SCORE) {
+    const state = getGameState();
+    decreaseScore();
+    if (state.score < MIN_SCORE) {
         handleGameOver();
     } else {
-        const GUESS_TOO_HIGH = guess > gameState.secretNumber;
+        const GUESS_TOO_HIGH = guess > state.secretNumber;
         setWarning(GUESS_TOO_HIGH ? "📈 Your guess is too hight!" : "📉 Your guess is too low!")
     }
 }
 
 function playGame() {
-    if (gameState.playerWin || gameState.gameIsOver) {
+    const state = getGameState();
+    if (state.playerWin || state.gameIsOver) {
         resetGame();
         return;
     }
