@@ -1,12 +1,15 @@
 {
-  "inputPrompt": "Digite um número entre ${MIN_GUESS}$ e ${MAX_GUESS}$.",
+  "inputPrompt": "Digite um número entre 1 e 20.",
   "guessCorrect": "🚩 Parabéns! Você venceu o jogo.",
   "gameOver": "😥 Que pena! Você perdeu.",
   "fillInput": "Preencha o campo abaixo com o seu palpite!",
-  "invalidRange": "O número deve estar entre ${MIN_GUESS}$ e %%MAX_GUESS%%!",
+  "invalidRange": "O número deve estar entre 1 e 20!",
   "guessHigh": "📈 Seu palpite é muito alto!",
   "guessLow": "📉 Seu palpite é muito baixo!",
   "gameTitle": "Adivinhe o Número!",
+  "gotItRight": "Você acertou!!!",
   "victoryTitle": "Você acertou!",
-  "gameOverTitle": "Fim de Jogo!"
+  "gameOverTitle": "Fim de Jogo!",
+  "playAgainLabel": "Recomeçar",
+  "checkLabel": "Checar"
 }

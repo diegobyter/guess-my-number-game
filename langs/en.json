@@ -1,12 +1,15 @@
 {
-  "inputPrompt": "Input a number between ${MIN_GUESS}$ and ${MAX_GUESS}$.",
+  "inputPrompt": "Input a number between 1 and 20.",
   "guessCorrect": "🚩 Congratulations! You won the game.",
   "gameOver": "😥 What a shame! You lost.",
   "fillInput": "Fill the input below with your guess first!",
-  "invalidRange": "The number must be between ${MIN_GUESS}$ and ${MAX_GUESS}$!",
+  "invalidRange": "The number must be between 1 and 20!",
   "guessHigh": "📈 Your guess is too high!",
   "guessLow": "📉 Your guess is too low!",
   "gameTitle": "Guess My Number!",
+  "gotItRight": "You got it right!!!",
   "victoryTitle": "You got it right!",
-  "gameOverTitle": "Game Over!"
+  "gameOverTitle": "Game Over!",
+  "playAgainLabel": "Play Again",
+  "checkLabel": "Check"
 }

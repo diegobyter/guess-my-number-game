@@ -115,6 +115,10 @@ footer {
     overflow: hidden;
 }
 
+.warning {
+    color: #fcd600;
+}
+
 .victory {
     animation-name: winAnimation;
     animation-duration: 500ms;
