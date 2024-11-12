@@ -1,35 +1,133 @@
-// UNDERSTANDING THE GAME
-// When first opened, the game generates a random number between 1 and 20 and sets the score to 20.
-// The prompt “Input a number between 1 and 20” blinks until the player focuses or hovers over it.
-// If the player submits without entering a number, an alert animation plays.
-// When a number is submitted, the game checks it against the secret number:
-// If incorrect, the score decreases by 1, and the game indicates if the guess is too high or too low.
-// If the player guesses correctly, a victory animation plays, and the score updates if it’s a new high score.
-// The screen turns green and pauses until the player clicks "Again."
-// If the score reaches zero, a game-over animation plays, and the screen turns red until "Again" is clicked.
-// Clicking "Again" restarts the game with the current high score intact if it’s updated.
-
-
-// PLAN THE ALGORITHM
-// 1. Generate and store a random number between 1 and 20;
-// 2. Set the score to 20;
-// 3. Add animation to the text “Input a number between 1 and 20”;
-// 4. If input gets focused, remove animation;
-// 5. If user click the "Check" button, check if input has a number;
-// 6. If input doesn't have a number, run the alert animation;
-// 7. But if input has a number, check if the number provided is the same as the secret number;
-// 8. If the player guesses correctly, play the victory animation and update the highscore if it is a new high score. Also, pause the game until the player clicks "Again" button.
-// 9. But if the guessed number isn't the same as the secret number, decrease the score by one and check if score is above 0.
-// 10. If the score is above 0, check if the guessed number is too high or too low compared to the secret number. Then, informs it to the user.
-// 11. But if the score is not above 0, run the game-over animation, and pause the game until the user clicks the "Play Again" button.
-
-// PLAN THE CODE ACHITECTURE
 // Query the DOM
+const $restartBtn = document.getElementById('play-again-btn');
+const $highscore = document.getElementById('highscore');
+const $currentScore = document.getElementById('current-score');
+const $targetNumber = document.getElementById('target-number');
+const $message = document.getElementById('message');
+const $userInput = document.getElementById('user-input');
+const $checkBtn = document.getElementById('check-btn');
+
 // Encapsulate state in an object
+const gameState = {
+    secretNumber: null,
+    score: 0,
+    highscore: 0,
+    gameIsOver: false
+}
+
 // Create function to reset the game
+function resetGAme() {
+    gameState.secretNumber = generateSecretNumber();
+    gameState.score = 20;
+    $currentScore.textContent = gameState.score;
+    gameState.gameIsOver = false;
+    $message.textContent = "<Input a number between 1 and 20>";
+    if (document.body.classList.contains('victory')) {
+        document.body.classList.remove('victory');
+    }
+    handleBlinkingAnimation(true);
+    if ($message.classList.contains('yellowText')) {
+        $message.classList.remove('yellowText')
+    }
+
+    $targetNumber.textContent = "?";
+    document.body.classList.add('bg-gradient');
+    $userInput.value = '';
+}
+
 // Create function to generate a random number between 1 and 20
+function generateSecretNumber() {
+    const secretNumber = Math.trunc(Math.random() * 20 + 1);
+    console.log("Secret: ", secretNumber);
+    return secretNumber;
+}
+
 // Create a function to start or stop the text blinking animation
+function handleBlinkingAnimation(blinkOrNot) {
+    if ($message.classList.contains('blink') && !blinkOrNot) {
+        $message.classList.remove('blink');
+    } else if (!$message.classList.contains('blink') && blinkOrNot) {
+        $message.classList.add('blink')
+    }
+}
+
 // Create a function to run the alert animation
+function runAlertAnimation(msg) {
+    if (!$userInput.classList.contains('shake') || !$checkBtn.classList.contains('shake')) {
+        $userInput.classList.add('shake');
+        $checkBtn.classList.add('shake');
+        const msgBefore = $message.textContent;
+        $message.textContent = msg;
+        $message.classList.add('redText');
+        $userInput.setAttribute('disabled', true);
+        $checkBtn.setAttribute('disabled', true);
+        setTimeout(() => {
+            $userInput.classList.remove('shake');
+            $checkBtn.classList.remove('shake');
+            $message.classList.remove('redText');
+            $message.textContent = msgBefore;
+            $userInput.removeAttribute('disabled')
+            $checkBtn.removeAttribute('disabled')
+        }, 4000)
+    }
+}
+
+// Create function to check the scores
+function checkScores() {
+    const inputValue = parseInt($userInput.value);
+    if (inputValue === gameState.secretNumber) {
+        if (gameState.score > gameState.highscore) {
+            gameState.highscore = gameState.score;
+            $highscore.textContent = gameState.highscore;
+        }
+        runVictoryAnimation()
+
+    } else {
+        gameState.score--;
+        $currentScore.textContent = gameState.score;
+    }
+
+    if (gameState.score <= 0) {
+        gameState.score = 0;
+        gameState.gameIsOver = true;
+        runGameOverAnimation();
+    } else if (inputValue < gameState.secretNumber) {
+        runAlertAnimation("📉 Your guess is too low!")
+    } else {
+        runAlertAnimation("📈 Your guess is too hight!")
+    }
+}
+
 // Create a function to run the victory animation
+function runVictoryAnimation() {
+    if (!document.body.classList.contains('victory')) {
+        document.body.classList.remove('bg-gradient');
+        $targetNumber.textContent = gameState.secretNumber;
+        document.body.classList.add('victory');
+        $message.textContent = "🚩 Congratulations! You won the game."
+    }
+}
+
 // Create a function to run the game-over animation
+function runGameOverAnimation() {
+    if (!document.body.classList.contains('gameover')) {
+        document.body.classList.remove('bg-gradient');
+        document.body.classList.add('gameover');
+        $message.textContent = "😥 Game Over! You lost."
+        $message.classList.add('yellowText')
+    }
+}
+
 // Add event listeners to the DOM elements
+$checkBtn.onclick = function () {
+    handleBlinkingAnimation(false)
+    if (!$userInput.value) {
+        runAlertAnimation("Fill the input bellow with your guest first!");
+    } else {
+        checkScores()
+    }
+}
+
+$restartBtn.onclick = resetGAme;
+
+resetGAme();
