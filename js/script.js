@@ -22,3 +22,14 @@
 // 9. But if the guessed number isn't the same as the secret number, decrease the score by one and check if score is above 0.
 // 10. If the score is above 0, check if the guessed number is too high or too low compared to the secret number. Then, informs it to the user.
 // 11. But if the score is not above 0, run the game-over animation, and pause the game until the user clicks the "Play Again" button.
+
+// PLAN THE CODE ACHITECTURE
+// Query the DOM
+// Encapsulate state in an object
+// Create function to reset the game
+// Create function to generate a random number between 1 and 20
+// Create a function to start or stop the text blinking animation
+// Create a function to run the alert animation
+// Create a function to run the victory animation
+// Create a function to run the game-over animation
+// Add event listeners to the DOM elements
