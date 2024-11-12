@@ -1,0 +1,12 @@
+{
+  "inputPrompt": "Input a number between ${MIN_GUESS}$ and ${MAX_GUESS}$.",
+  "guessCorrect": "🚩 Congratulations! You won the game.",
+  "gameOver": "😥 What a shame! You lost.",
+  "fillInput": "Fill the input below with your guess first!",
+  "invalidRange": "The number must be between ${MIN_GUESS}$ and ${MAX_GUESS}$!",
+  "guessHigh": "📈 Your guess is too high!",
+  "guessLow": "📉 Your guess is too low!",
+  "gameTitle": "Guess My Number!",
+  "victoryTitle": "You got it right!",
+  "gameOverTitle": "Game Over!"
+}

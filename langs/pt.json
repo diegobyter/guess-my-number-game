@@ -1,0 +1,12 @@
+{
+  "inputPrompt": "Digite um número entre ${MIN_GUESS}$ e ${MAX_GUESS}$.",
+  "guessCorrect": "🚩 Parabéns! Você venceu o jogo.",
+  "gameOver": "😥 Que pena! Você perdeu.",
+  "fillInput": "Preencha o campo abaixo com o seu palpite!",
+  "invalidRange": "O número deve estar entre ${MIN_GUESS}$ e %%MAX_GUESS%%!",
+  "guessHigh": "📈 Seu palpite é muito alto!",
+  "guessLow": "📉 Seu palpite é muito baixo!",
+  "gameTitle": "Adivinhe o Número!",
+  "victoryTitle": "Você acertou!",
+  "gameOverTitle": "Fim de Jogo!"
+}
