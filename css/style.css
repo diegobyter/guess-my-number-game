@@ -56,7 +56,7 @@ main {
     overflow: hidden;
 }
 
-#target-number {
+#secret-number {
     margin: 1rem;
     padding: 2rem 2.5rem;
     background-color: white;
@@ -66,7 +66,7 @@ main {
     position: relative;
 }
 
-#target-number::after {
+#secret-number::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -98,19 +98,15 @@ footer {
     overflow: hidden;
 }
 
-.blink {
-    opacity: 1;
-    animation-name: blinkAnimation;
-    animation-duration: 500ms;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-    animation-timing-function: cubic-bezier(1, 0, 0, 1);
-}
-
 .victory {
     animation-name: winAnimation;
     animation-duration: 500ms;
     animation-fill-mode: forwards;
+}
+
+.victory button,
+.victory #secret-number {
+    color: rgb(28, 180, 28);
 }
 
 .gameover {
@@ -119,12 +115,9 @@ footer {
     animation-fill-mode: forwards;
 }
 
-.redText {
-    color: red;
-}
-
-.yellowText {
-    color: yellow;
+.gameover button,
+.gameover #secret-number {
+    color: rgb(216, 46, 46);
 }
 
 .shake {

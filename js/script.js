@@ -1,133 +1,134 @@
-// Query the DOM
-const $restartBtn = document.getElementById('play-again-btn');
-const $highscore = document.getElementById('highscore');
-const $currentScore = document.getElementById('current-score');
-const $targetNumber = document.getElementById('target-number');
-const $message = document.getElementById('message');
-const $userInput = document.getElementById('user-input');
-const $checkBtn = document.getElementById('check-btn');
+"use strict";
 
-// Encapsulate state in an object
+const $submitBtn = document.getElementById('check-btn');
+const $restartBtn = document.getElementById('play-again-btn');
+const $guess = document.getElementById('user-input');
+
+const MIN_SCORE = 1;
+const MAX_SCORE = 100;
+const MIN_GUESS = 1;
+const MAX_GUESS = 20;
+const PENALTY = 10;
+
 const gameState = {
     secretNumber: null,
     score: 0,
     highscore: 0,
-    gameIsOver: false
+    message: null,
+    playerWin: false,
+    displayWarning: false,
+    gameIsOver: false,
+    resetGame: false
 }
 
-// Create function to reset the game
-function resetGAme() {
+function resetGame() {
     gameState.secretNumber = generateSecretNumber();
-    gameState.score = 20;
-    $currentScore.textContent = gameState.score;
+    gameState.score = MAX_SCORE;
+    gameState.message = `<Input a number between ${MIN_GUESS} and ${MAX_GUESS}>`;
+    gameState.playerWin = false;
     gameState.gameIsOver = false;
-    $message.textContent = "<Input a number between 1 and 20>";
-    if (document.body.classList.contains('victory')) {
-        document.body.classList.remove('victory');
-    }
-    handleBlinkingAnimation(true);
-    if ($message.classList.contains('yellowText')) {
-        $message.classList.remove('yellowText')
-    }
-
-    $targetNumber.textContent = "?";
-    document.body.classList.add('bg-gradient');
-    $userInput.value = '';
+    gameState.resetGame = true;
+    $guess.value = '';
+    updateGameUI();
 }
 
-// Create function to generate a random number between 1 and 20
-function generateSecretNumber() {
-    const secretNumber = Math.trunc(Math.random() * 20 + 1);
-    console.log("Secret: ", secretNumber);
-    return secretNumber;
-}
+function updateGameUI() {
+    const $highscore = document.getElementById('highscore');
+    const $score = document.getElementById('current-score');
+    const $secretNumber = document.getElementById('secret-number');
+    const $message = document.getElementById('message');
+    const $background = document.body;
+    const $h1 = document.querySelector('h1');
 
-// Create a function to start or stop the text blinking animation
-function handleBlinkingAnimation(blinkOrNot) {
-    if ($message.classList.contains('blink') && !blinkOrNot) {
-        $message.classList.remove('blink');
-    } else if (!$message.classList.contains('blink') && blinkOrNot) {
-        $message.classList.add('blink')
+    if (gameState.playerWin) {
+        $h1.textContent = "You got it right!"
+        $background.className = 'victory';
     }
-}
+    else if (gameState.gameIsOver) {
+        $background.className = 'gameover';
+        $h1.textContent = "Game Over!";
+    } else {
+        $background.className = 'bg-gradient';
+        $h1.textContent = "Guess My Number!";
+    }
 
-// Create a function to run the alert animation
-function runAlertAnimation(msg) {
-    if (!$userInput.classList.contains('shake') || !$checkBtn.classList.contains('shake')) {
-        $userInput.classList.add('shake');
-        $checkBtn.classList.add('shake');
-        const msgBefore = $message.textContent;
-        $message.textContent = msg;
-        $message.classList.add('redText');
-        $userInput.setAttribute('disabled', true);
-        $checkBtn.setAttribute('disabled', true);
+    $secretNumber.textContent = gameState.playerWin ? gameState.secretNumber : "?";
+    $highscore.textContent = gameState.highscore;
+    $score.textContent = gameState.score;
+    $message.textContent = gameState.message;
+
+    if (gameState.displayWarning) {
+        $guess.classList.add('shake');
+        $submitBtn.classList.add('shake');
+        $guess.setAttribute('disabled', true);
+        $submitBtn.setAttribute('disabled', true);
+        $message.style.color = "orange";
+
         setTimeout(() => {
-            $userInput.classList.remove('shake');
-            $checkBtn.classList.remove('shake');
-            $message.classList.remove('redText');
-            $message.textContent = msgBefore;
-            $userInput.removeAttribute('disabled')
-            $checkBtn.removeAttribute('disabled')
-        }, 4000)
+            gameState.displayWarning = false;
+            $guess.classList.remove('shake');
+            $submitBtn.classList.remove('shake');
+            $guess.removeAttribute('disabled');
+            $submitBtn.removeAttribute('disabled');
+            $message.style.color = "white";
+        }, 1500);
     }
 }
 
-// Create function to check the scores
-function checkScores() {
-    const inputValue = parseInt($userInput.value);
-    if (inputValue === gameState.secretNumber) {
-        if (gameState.score > gameState.highscore) {
-            gameState.highscore = gameState.score;
-            $highscore.textContent = gameState.highscore;
-        }
-        runVictoryAnimation()
+function generateSecretNumber() {
+    return Math.trunc(Math.random() * MAX_GUESS + MIN_GUESS);
+}
+
+function setWarning(message) {
+    gameState.message = message;
+    gameState.displayWarning = true;
+}
+function isCorrectGuess(guess) {
+    return guess === gameState.secretNumber;
+}
+function isValidGuess(guess) {
+    return guess >= MIN_GUESS && guess <= MAX_GUESS;
+}
+function handleWin() {
+    gameState.playerWin = true;
+    gameState.message = "🚩 Congratulations! You won the game.";
+    if (gameState.score > gameState.highscore) {
+        gameState.highscore = gameState.score;
+    }
+}
+
+function handleGameOver() {
+    gameState.gameIsOver = true;
+    gameState.message = "😥 What a shame! You lost.";
+}
+
+function handleWrongGuess(guess) {
+    gameState.score -= PENALTY;
+    if (gameState.score === MIN_SCORE - PENALTY) {
+        handleGameOver();
+    } else {
+        const GUESS_TOO_HIGH = guess > gameState.secretNumber;
+        setWarning(GUESS_TOO_HIGH ? "📈 Your guess is too hight!" : "📉 Your guess is too low!")
+    }
+}
+
+function playGame() {
+    const GUESS = Number($guess.value);
+    if (!$guess.value) {
+        setWarning("Fill the input bellow with your guest first!");
+
+    } else if (!isValidGuess(GUESS)) {
+        setWarning(`The number must be between ${MIN_GUESS} and ${MAX_GUESS}!`);
+
+    } else if (isCorrectGuess(GUESS)) {
+        handleWin();
 
     } else {
-        gameState.score--;
-        $currentScore.textContent = gameState.score;
+        handleWrongGuess(GUESS);
     }
-
-    if (gameState.score <= 0) {
-        gameState.score = 0;
-        gameState.gameIsOver = true;
-        runGameOverAnimation();
-    } else if (inputValue < gameState.secretNumber) {
-        runAlertAnimation("📉 Your guess is too low!")
-    } else {
-        runAlertAnimation("📈 Your guess is too hight!")
-    }
+    updateGameUI();
 }
 
-// Create a function to run the victory animation
-function runVictoryAnimation() {
-    if (!document.body.classList.contains('victory')) {
-        document.body.classList.remove('bg-gradient');
-        $targetNumber.textContent = gameState.secretNumber;
-        document.body.classList.add('victory');
-        $message.textContent = "🚩 Congratulations! You won the game."
-    }
-}
-
-// Create a function to run the game-over animation
-function runGameOverAnimation() {
-    if (!document.body.classList.contains('gameover')) {
-        document.body.classList.remove('bg-gradient');
-        document.body.classList.add('gameover');
-        $message.textContent = "😥 Game Over! You lost."
-        $message.classList.add('yellowText')
-    }
-}
-
-// Add event listeners to the DOM elements
-$checkBtn.onclick = function () {
-    handleBlinkingAnimation(false)
-    if (!$userInput.value) {
-        runAlertAnimation("Fill the input bellow with your guest first!");
-    } else {
-        checkScores()
-    }
-}
-
-$restartBtn.onclick = resetGAme;
-
-resetGAme();
+$submitBtn.addEventListener('click', playGame);
+$restartBtn.addEventListener('click', resetGame);
+resetGame();
